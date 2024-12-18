@@ -12,12 +12,8 @@ import { InputNumber } from 'primereact/inputnumber';
 
 
 function App() {
-  const [count, setCount] = useState(0);
   const [movies,setMovies]= useState<{ rowInd: number; title: string }[]>([]);
-  const [data, setData] = useState([]); // State for storing API data
   const [first, setFirst] = useState(0); // Starting index
-  const [rows, setRows] = useState(12); // Rows per page
-  const [totalRecords, setTotalRecords] = useState(12*20);
   const [page,setPage]= useState(0) // Total records from API
   const [selectedMovies,setSelectedMovies]=useState<{ rowInd: number; title: string }[]>([])
   const [rowSelected, setRowSelected] = useState<number | null | undefined>();
@@ -185,11 +181,11 @@ function App() {
       </div>
       <DataTable value={movies} selectionMode='multiple' selection={selectedMovies!} onSelectionChange={onSelectionChange} dataKey="rowInd" tableStyle={{ minWidth: "50rem"}}>
       <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
-        {columns.map((col, i) => (
+        {columns.map((col) => (
           <Column key={col.field} field={col.field} header={col.header} />
         ))}
       </DataTable>
-      <Paginator first={first} rows={rows} totalRecords={totalRecords} onPageChange={onPageChange} />
+      <Paginator first={first} rows={12} totalRecords={12*20} onPageChange={onPageChange} />
 
     </>
   );
