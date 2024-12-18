@@ -13,18 +13,18 @@ import { InputNumber } from 'primereact/inputnumber';
 
 function App() {
   const [count, setCount] = useState(0);
-  const [movies,setMovies]= useState<string[]>([]);
+  const [movies,setMovies]= useState<{ rowInd: number; title: string }[]>([]);
   const [data, setData] = useState([]); // State for storing API data
   const [first, setFirst] = useState(0); // Starting index
   const [rows, setRows] = useState(12); // Rows per page
   const [totalRecords, setTotalRecords] = useState(12*20);
   const [page,setPage]= useState(0) // Total records from API
-  const [selectedMovies,setSelectedMovies]=useState<string[]>([])
-  const [rowSelected, setRowSelected] = useState<number>();
-  const [pageInfo,setPageInfo] =useState(Array.from({ length: 20 }, () => []));
+  const [selectedMovies,setSelectedMovies]=useState<{ rowInd: number; title: string }[]>([])
+  const [rowSelected, setRowSelected] = useState<number | null | undefined>();
+  const [pageInfo,setPageInfo] =useState<number[][]>(Array.from({ length: 20 }, () => []));
 
-  const op = useRef(null);
-
+  // const op = useRef(null);
+  const op = useRef<OverlayPanel | null>(null);
   const columns = [
     { field: "title", header: "Title" },
     { field: "place_of_origin", header: "Place of Origin" },
@@ -75,7 +75,7 @@ function App() {
            }
         }
         if(partialRows){
-          const extra=[];
+          const extra:number[]=[];
           for(let i=1;i<=partialRows;i++){
             extra.push(i);
           }
@@ -145,7 +145,6 @@ function App() {
       setPageInfo(prevPageInfo=>{
         const newPageInfo=[...prevPageInfo]
         newPageInfo[page]=pageArray
-        console.log(newPageInfo)
         return newPageInfo
       })
       // console.log(pageArray)
@@ -162,7 +161,7 @@ function App() {
     },[pageInfo])
 
     const onSubmit=async (e:any)=>{
-      op.current.toggle(e)// to close the overlay panel on submit
+      op.current?.toggle(e)// to close the overlay panel on submit
       setRowSelected(Math.min(rowSelected!,240))
       // First of all change the pageInfo state
       const numRows=Math.min(rowSelected!,240)
@@ -176,7 +175,7 @@ function App() {
       <i className="pi pi-angle-down" style={{ color: 'slateblue' }}></i> */}
 
       <div className="overlay-box">
-            <Button type="button" icon="pi pi-angle-down" label="" onClick={(e) => op.current.toggle(e)} />
+            <Button type="button" icon="pi pi-angle-down" label="" onClick={(e) => op.current?.toggle(e)} />
             <OverlayPanel ref={op}>
             <div className="flex-auto">
                 <InputNumber inputId="integeronly" value={rowSelected} onValueChange={(e) => setRowSelected(e.value)} placeholder="Enter No. Of Rows.." className="input-box"/>
